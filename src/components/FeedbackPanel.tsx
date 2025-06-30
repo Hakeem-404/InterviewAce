@@ -54,7 +54,7 @@ const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
             </div>
             <div>
               <h3 className="text-xl font-semibold text-gray-900">AI Response Analysis</h3>
-              <p className="text-sm text-gray-600">Powered by Claude AI</p>
+              <p className="text-sm text-gray-600">Powered by AI</p>
             </div>
           </div>
           <div className="text-right">
@@ -292,7 +292,7 @@ const FeedbackPanel: React.FC<FeedbackPanelProps> = ({
           </div>
           <div className="flex items-center space-x-2">
             <span className="text-xs text-gray-600">Powered by</span>
-            <span className="text-xs font-semibold text-blue-600">Claude AI</span>
+            <span className="text-xs font-semibold text-blue-600"> AI</span>
           </div>
         </div>
       </div>
