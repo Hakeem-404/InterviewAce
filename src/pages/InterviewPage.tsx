@@ -511,7 +511,7 @@ const InterviewPage: React.FC = () => {
           <div className="mb-6">
             <LoadingStates
               type="evaluation"
-              message="Claude AI is analyzing your response..."
+              message="AI is analyzing your response..."
               progress={75}
             />
           </div>
