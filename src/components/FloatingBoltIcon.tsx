@@ -1,6 +1,3 @@
-Here's the fixed version with all missing closing brackets added:
-
-```jsx
 import React from 'react';
 import { Zap } from 'lucide-react';
 
@@ -53,13 +50,3 @@ const FloatingBoltIcon: React.FC<FloatingBoltIconProps> = ({ className = '' }) =
 );
 
 export default FloatingBoltIcon;
-```
-
-The main fixes were:
-
-1. Added closing tag for the `<svg>` element
-2. Added closing tag for the `<g>` element 
-3. Added closing parenthesis for the component's return statement
-4. Added closing curly brace for the component definition
-
-The component now has proper syntax and all elements are properly closed.
