@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Brain, Menu, X, User, LogOut, Settings, History, BarChart3 } from 'lucide-react';
+import { Brain, Menu, X, User, LogOut, Settings, History, BarChart3, CreditCard, Star } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useSubscription } from '../context/SubscriptionContext';
 import AuthModal from './auth/AuthModal';
 import Button from './Button';
+import UsageTracker from './premium/UsageTracker';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,10 +14,12 @@ const Header: React.FC = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const location = useLocation();
   const { user, signOut, loading } = useAuth();
+  const { isPremium } = useSubscription();
 
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Practice', href: '/upload' },
+    { name: 'Pricing', href: '/pricing' },
     ...(user ? [{ name: 'History', href: '/history' }] : []),
   ];
 
@@ -37,6 +41,8 @@ const Header: React.FC = () => {
         return 'Interview Session';
       case '/results':
         return 'Results & Feedback';
+      case '/pricing':
+        return 'Pricing Plans';
       default:
         return 'InterviewAce';
     }
@@ -103,11 +109,22 @@ const Header: React.FC = () => {
                     <span className="text-sm font-medium text-gray-700">
                       {user.user_metadata?.full_name || user.email?.split('@')[0]}
                     </span>
+                    {isPremium && (
+                      <span className="flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs font-medium">
+                        <Star className="h-3 w-3" />
+                        Premium
+                      </span>
+                    )}
                   </button>
 
                   {/* User Dropdown Menu */}
                   {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                      <div className="px-4 py-3 border-b border-gray-100">
+                        <p className="text-sm font-medium text-gray-900">{user.user_metadata?.full_name || 'User'}</p>
+                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                      </div>
+                      
                       <Link
                         to="/profile"
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
@@ -116,6 +133,7 @@ const Header: React.FC = () => {
                         <User className="h-4 w-4 mr-3" />
                         Profile
                       </Link>
+                      
                       <Link
                         to="/history"
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
@@ -124,6 +142,16 @@ const Header: React.FC = () => {
                         <History className="h-4 w-4 mr-3" />
                         Interview History
                       </Link>
+                      
+                      <Link
+                        to="/pricing"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        <CreditCard className="h-4 w-4 mr-3" />
+                        Subscription
+                      </Link>
+                      
                       <div className="border-t border-gray-100 my-1" />
                       <button
                         onClick={handleSignOut}
@@ -172,7 +200,12 @@ const Header: React.FC = () => {
           {/* Breadcrumb */}
           {location.pathname !== '/' && (
             <div className="py-2 border-t border-gray-100">
-              <p className="text-sm text-gray-600">{getBreadcrumb()}</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-600">{getBreadcrumb()}</p>
+                {user && !isPremium && location.pathname !== '/pricing' && (
+                  <UsageTracker className="w-48" />
+                )}
+              </div>
             </div>
           )}
 
@@ -202,9 +235,17 @@ const Header: React.FC = () => {
                       <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
                         {getInitials(user.user_metadata?.full_name)}
                       </div>
-                      <span className="text-sm font-medium text-gray-700">
-                        {user.user_metadata?.full_name || user.email?.split('@')[0]}
-                      </span>
+                      <div>
+                        <span className="text-sm font-medium text-gray-700">
+                          {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                        </span>
+                        {isPremium && (
+                          <div className="flex items-center gap-1 text-xs text-blue-700">
+                            <Star className="h-3 w-3" />
+                            <span>Premium Member</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <Link
                       to="/profile"
@@ -219,6 +260,13 @@ const Header: React.FC = () => {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Interview History
+                    </Link>
+                    <Link
+                      to="/pricing"
+                      className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Subscription
                     </Link>
                     <button
                       onClick={() => {

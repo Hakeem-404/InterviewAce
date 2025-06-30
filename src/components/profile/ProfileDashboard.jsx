@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
+import { useSubscription } from '../../context/SubscriptionContext'
 import { useToast } from '../../hooks/useToast'
 import { 
   User, Briefcase, Award, TrendingUp, Settings, Calendar, 
-  MapPin, ExternalLink, Edit3, Save, X, Mail, Shield
+  MapPin, ExternalLink, Edit3, Save, X, Mail, Shield,
+  CreditCard, Zap, Star
 } from 'lucide-react'
 import { supabase } from '../../lib/supabaseClient'
 import Button from '../Button'
 import LoadingStates from '../LoadingStates'
+import SubscriptionDetails from '../premium/SubscriptionDetails'
 
 const ProfileDashboard = () => {
   const { user, updateProfile, signOut } = useAuth()
+  const { isPremium, getCurrentPlan } = useSubscription()
   const { addToast } = useToast()
   const [profileData, setProfileData] = useState(null)
   const [isEditing, setIsEditing] = useState(false)
@@ -142,6 +146,8 @@ const ProfileDashboard = () => {
     }
   }
 
+  const currentPlan = getCurrentPlan();
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -169,6 +175,12 @@ const ProfileDashboard = () => {
                   <Calendar className="h-4 w-4" />
                   Joined {new Date(user?.created_at).toLocaleDateString()}
                 </div>
+                {isPremium && (
+                  <div className="mt-3 flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                    <Star className="h-4 w-4" />
+                    Premium Member
+                  </div>
+                )}
               </div>
             </div>
             
@@ -384,6 +396,9 @@ const ProfileDashboard = () => {
             </div>
           </div>
         </div>
+
+        {/* Subscription Details */}
+        <SubscriptionDetails />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
