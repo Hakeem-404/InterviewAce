@@ -284,7 +284,7 @@ const AnalysisPage: React.FC = () => {
               Analyzing Your Documents
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed">
-              Claude AI is processing your CV and job description to create personalized interview questions.
+              AI is processing your CV and job description to create personalized interview questions.
             </p>
           </div>
 
@@ -363,7 +363,7 @@ const AnalysisPage: React.FC = () => {
             <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">
               <div className="flex items-center space-x-3 mb-4">
                 <MessageSquare className="h-6 w-6 text-purple-600" />
-                <h3 className="font-semibold text-purple-900">Claude AI Analysis includes:</h3>
+                <h3 className="font-semibold text-purple-900">AI Analysis includes:</h3>
               </div>
               <ul className="text-sm text-purple-800 space-y-2">
                 <li>• Skills gap analysis between CV and job requirements</li>
