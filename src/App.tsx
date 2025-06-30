@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import { AuthProvider } from './context/AuthContext';
-import { SubscriptionProvider } from './context/SubscriptionContext';
 import { useToast } from './hooks/useToast';
 import ErrorBoundary from './components/ErrorBoundary';
 import ToastContainer from './components/ToastContainer';
@@ -17,8 +16,6 @@ import InterviewPage from './pages/InterviewPage';
 import ResultsPage from './pages/ResultsPage';
 import InterviewHistoryPage from './pages/InterviewHistoryPage';
 import ProfileDashboard from './components/profile/ProfileDashboard';
-import PricingPage from './pages/PricingPage';
-import SubscriptionSuccessPage from './pages/SubscriptionSuccessPage';
 
 // Toast Provider Component
 const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -36,79 +33,75 @@ function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
-        <SubscriptionProvider>
-          <AppProvider>
-            <ToastProvider>
-              <Router>
-                <div className="min-h-screen bg-white">
-                  <NetworkStatus />
-                  <Header />
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/pricing" element={<PricingPage />} />
-                    <Route path="/subscription/success" element={<SubscriptionSuccessPage />} />
-                    <Route 
-                      path="/profile" 
-                      element={
-                        <ProtectedRoute>
-                          <ProfileDashboard />
-                        </ProtectedRoute>
-                      } 
-                    />
-                    <Route 
-                      path="/history" 
-                      element={
-                        <ProtectedRoute>
-                          <InterviewHistoryPage />
-                        </ProtectedRoute>
-                      } 
-                    />
-                    <Route 
-                      path="/upload" 
-                      element={
-                        <ProtectedRoute>
-                          <UploadPage />
-                        </ProtectedRoute>
-                      } 
-                    />
-                    <Route 
-                      path="/analysis" 
-                      element={
-                        <ProtectedRoute>
-                          <AnalysisPage />
-                        </ProtectedRoute>
-                      } 
-                    />
-                    <Route 
-                      path="/analysis-results" 
-                      element={
-                        <ProtectedRoute>
-                          <AnalysisResultsPage />
-                        </ProtectedRoute>
-                      } 
-                    />
-                    <Route 
-                      path="/interview" 
-                      element={
-                        <ProtectedRoute>
-                          <InterviewPage />
-                        </ProtectedRoute>
-                      } 
-                    />
-                    <Route 
-                      path="/results" 
-                      element={
-                        <ProtectedRoute>
-                          <ResultsPage />
-                        </ProtectedRoute>
-                      } 
-                    />
-                  </Routes>
-                </div>
-              </Router>
-            </ToastProvider>
-          </AppProvider>
-        </SubscriptionProvider>
+        <AppProvider>
+          <ToastProvider>
+            <Router>
+              <div className="min-h-screen bg-white">
+                <NetworkStatus />
+                <Header />
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route 
+                    path="/profile" 
+                    element={
+                      <ProtectedRoute>
+                        <ProfileDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/history" 
+                    element={
+                      <ProtectedRoute>
+                        <InterviewHistoryPage />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/upload" 
+                    element={
+                      <ProtectedRoute>
+                        <UploadPage />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/analysis" 
+                    element={
+                      <ProtectedRoute>
+                        <AnalysisPage />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/analysis-results" 
+                    element={
+                      <ProtectedRoute>
+                        <AnalysisResultsPage />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/interview" 
+                    element={
+                      <ProtectedRoute>
+                        <InterviewPage />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/results" 
+                    element={
+                      <ProtectedRoute>
+                        <ResultsPage />
+                      </ProtectedRoute>
+                    } 
+                  />
+                </Routes>
+              </div>
+            </Router>
+          </ToastProvider>
+        </AppProvider>
       </AuthProvider>
     </ErrorBoundary>
   );

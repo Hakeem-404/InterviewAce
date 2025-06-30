@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, BrainCircuit, AlertTriangle, CheckCircle, Sparkles } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
-import { useAuth } from '../context/AuthContext';
-import { useSubscription } from '../context/SubscriptionContext';
 import { useToast } from '../hooks/useToast';
 import { useAutoSave } from '../hooks/useAutoSave';
 import FileUpload from '../components/FileUpload';
@@ -11,8 +9,6 @@ import JobDescriptionInput from '../components/JobDescriptionInput';
 import Button from '../components/Button';
 import LoadingStates from '../components/LoadingStates';
 import ErrorMessage from '../components/ErrorMessage';
-import UpgradePrompt from '../components/premium/UpgradePrompt';
-import PremiumFeatureGate from '../components/premium/PremiumFeatureGate';
 
 interface FileData {
   file: File | null;
@@ -31,16 +27,11 @@ const UploadPage: React.FC = () => {
     resetSession
   } = useAppContext();
   
-  const { user } = useAuth();
-  const { canUseFeature, trackUsage } = useSubscription();
-  
   const [localCvData, setLocalCvData] = useState<FileData>({ file: null, text: cvText, metadata: cvMetadata });
   const [isLoading, setIsLoading] = useState(false);
   const [showTextPreviews, setShowTextPreviews] = useState(false);
   const [hasResetSession, setHasResetSession] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
-  const [canUseQuestions, setCanUseQuestions] = useState(true);
-  const [isCheckingAccess, setIsCheckingAccess] = useState(true);
   const navigate = useNavigate();
   const { addToast } = useToast();
 
@@ -60,29 +51,6 @@ const UploadPage: React.FC = () => {
       addToast('Welcome! Upload your documents to get started.', 'info');
     }
   }, [resetSession, hasResetSession, addToast]);
-
-  // Check if user can use questions
-  useEffect(() => {
-    const checkAccess = async () => {
-      if (user) {
-        setIsCheckingAccess(true);
-        try {
-          const hasAccess = await canUseFeature('question');
-          setCanUseQuestions(hasAccess);
-        } catch (error) {
-          console.error('Failed to check question access:', error);
-          setCanUseQuestions(false);
-        } finally {
-          setIsCheckingAccess(false);
-        }
-      } else {
-        setCanUseQuestions(true);
-        setIsCheckingAccess(false);
-      }
-    };
-
-    checkAccess();
-  }, [user, canUseFeature]);
 
   const handleCvUpload = (result: FileData) => {
     console.log('CV Upload result:', result);
@@ -131,12 +99,6 @@ const UploadPage: React.FC = () => {
       return;
     }
 
-    // Check if user can use questions
-    if (user && !canUseQuestions) {
-      addToast('You have reached your monthly question limit', 'error');
-      return;
-    }
-
     setIsLoading(true);
     
     try {
@@ -150,11 +112,6 @@ const UploadPage: React.FC = () => {
       
       sessionStorage.setItem('interviewData', JSON.stringify(sessionData));
       saveNow(); // Final save before navigation
-      
-      // Track usage if user is logged in
-      if (user) {
-        await trackUsage('question');
-      }
       
       addToast('Documents uploaded successfully! Starting analysis...', 'success');
       
@@ -228,16 +185,6 @@ const UploadPage: React.FC = () => {
             Upload your CV and provide the job description to get personalized interview questions powered by AI.
           </p>
         </div>
-
-        {/* Usage Warning for Free Users */}
-        {!isCheckingAccess && !canUseQuestions && (
-          <div className="max-w-6xl mx-auto mb-8">
-            <UpgradePrompt 
-              feature="questions"
-              message="You've reached your monthly limit of free questions. Upgrade to premium for unlimited access."
-            />
-          </div>
-        )}
 
         {/* Upload Form */}
         <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto mb-8">
@@ -364,38 +311,19 @@ const UploadPage: React.FC = () => {
 
         {/* Analyze Button */}
         <div className="text-center mb-12">
-          <PremiumFeatureGate
-            feature="question"
-            fallback={
-              <div className="space-y-4">
-                <Button
-                  size="lg"
-                  disabled={true}
-                  className="px-12 py-4 text-lg opacity-50 cursor-not-allowed"
-                >
-                  Monthly Limit Reached
-                </Button>
-                <UpgradePrompt 
-                  feature="questions"
-                  message="You've reached your monthly limit of free questions. Upgrade to premium for unlimited access."
-                />
-              </div>
-            }
+          <Button
+            size="lg"
+            onClick={handleAnalyze}
+            disabled={!isValidForAnalysis || isLoading}
+            loading={isLoading}
+            className="px-12 py-4 text-lg btn-hover-lift shadow-glow"
           >
-            <Button
-              size="lg"
-              onClick={handleAnalyze}
-              disabled={!isValidForAnalysis || isLoading}
-              loading={isLoading}
-              className="px-12 py-4 text-lg btn-hover-lift shadow-glow"
-            >
-              {isLoading ? 'Processing Documents...' : 'Analyze Documents & Generate Questions'}
-            </Button>
-          </PremiumFeatureGate>
+            {isLoading ? 'Processing Documents...' : 'Analyze Documents & Generate Questions'}
+          </Button>
           
           {isValidForAnalysis && (
             <p className="text-sm text-gray-600 mt-4">
-              This usually takes 30-60 seconds to complete using AI
+              This usually takes 30-60 seconds to complete using Claude AI
             </p>
           )}
         </div>
@@ -441,7 +369,7 @@ const UploadPage: React.FC = () => {
                 {
                   step: 1,
                   title: 'AI Document Analysis',
-                  description: 'AI extracts and analyzes key information from your CV and job description',
+                  description: 'Claude AI extracts and analyzes key information from your CV and job description',
                   icon: <BrainCircuit className="h-6 w-6" />,
                   color: 'blue'
                 },

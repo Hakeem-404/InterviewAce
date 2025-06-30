@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Clock, MessageSquare, AlertCircle, Mic2, Volume2, Brain, Settings, Sliders, X } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
-import { useAuth } from '../context/AuthContext';
-import { useSubscription } from '../context/SubscriptionContext';
 import { useToast } from '../hooks/useToast';
 import InterviewCard from '../components/InterviewCard';
 import Button from '../components/Button';
@@ -13,8 +11,6 @@ import QuestionReader from '../components/QuestionReader';
 import FeedbackPanel from '../components/FeedbackPanel';
 import LoadingStates from '../components/LoadingStates';
 import QuestionConfiguration from '../components/interview/QuestionConfiguration';
-import PremiumFeatureGate from '../components/premium/PremiumFeatureGate';
-import UpgradePrompt from '../components/premium/UpgradePrompt';
 import { evaluateResponse } from '../services/apiService';
 import { preloadQuestionAudio } from '../services/voiceService';
 
@@ -32,9 +28,6 @@ const InterviewPage: React.FC = () => {
     getAnsweredQuestionsCount,
     cvText
   } = useAppContext();
-
-  const { user } = useAuth();
-  const { isPremium } = useSubscription();
 
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [currentAnswer, setCurrentAnswer] = useState('');
@@ -138,7 +131,7 @@ const InterviewPage: React.FC = () => {
   };
 
   const handleTranscriptChange = (transcript: string) => {
-    if (isVoiceMode && transcript) {
+    if (isVoiceMode && transcript && transcript.trim() !== currentAnswer.trim()) {
       handleAnswerChange(transcript);
     }
   };
@@ -380,25 +373,13 @@ const InterviewPage: React.FC = () => {
 
         {/* Voice Selector */}
         {showVoiceSelector && (
-          <PremiumFeatureGate
-            feature="voice"
-            fallback={
-              <div className="mb-6">
-                <UpgradePrompt 
-                  feature="voice"
-                  message="Voice features are available exclusively to premium subscribers."
-                />
-              </div>
-            }
-          >
-            <div className="mb-6">
-              <VoiceSelector
-                selectedVoice={voiceSettings.voiceType}
-                onVoiceChange={handleVoiceChange}
-                onSettingsChange={handleVoiceSettingsChange}
-              />
-            </div>
-          </PremiumFeatureGate>
+          <div className="mb-6">
+            <VoiceSelector
+              selectedVoice={voiceSettings.voiceType}
+              onVoiceChange={handleVoiceChange}
+              onSettingsChange={handleVoiceSettingsChange}
+            />
+          </div>
         )}
 
         {/* Question Card */}
@@ -412,21 +393,16 @@ const InterviewPage: React.FC = () => {
             />
             
             {/* Question Reader */}
-            <PremiumFeatureGate
-              feature="voice"
-              showPrompt={false}
-            >
-              <div className="mt-4">
-                <QuestionReader
-                  question={currentQuestionData.question}
-                  questionNumber={currentQuestionIndex + 1}
-                  totalQuestions={questions.length}
-                  voiceType={voiceSettings.voiceType}
-                  voiceSettings={voiceSettings}
-                  autoPlay={isVoiceMode && voiceSettings.autoPlay}
-                />
-              </div>
-            </PremiumFeatureGate>
+            <div className="mt-4">
+              <QuestionReader
+                question={currentQuestionData.question}
+                questionNumber={currentQuestionIndex + 1}
+                totalQuestions={questions.length}
+                voiceType={voiceSettings.voiceType}
+                voiceSettings={voiceSettings}
+                autoPlay={isVoiceMode && voiceSettings.autoPlay}
+              />
+            </div>
 
             {/* Question Details */}
             <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -454,27 +430,15 @@ const InterviewPage: React.FC = () => {
         )}
 
         {/* Voice Controls */}
-        <PremiumFeatureGate
-          feature="voice"
-          fallback={
-            <div className="mb-6">
-              <UpgradePrompt 
-                feature="voice"
-                message="Voice features allow you to practice speaking your answers and get a more realistic interview experience."
-              />
-            </div>
-          }
-        >
-          <div className="mb-6">
-            <VoiceControls
-              text={currentQuestionData?.question}
-              onTranscriptChange={handleTranscriptChange}
-              onVoiceMode={handleVoiceModeChange}
-              isVoiceMode={isVoiceMode}
-              autoPlay={voiceSettings.autoPlay}
-            />
-          </div>
-        </PremiumFeatureGate>
+        <div className="mb-6">
+          <VoiceControls
+            text={currentQuestionData?.question}
+            onTranscriptChange={handleTranscriptChange}
+            onVoiceMode={handleVoiceModeChange}
+            isVoiceMode={isVoiceMode}
+            autoPlay={voiceSettings.autoPlay}
+          />
+        </div>
 
         {/* Answer Section */}
         <div className="bg-white rounded-xl shadow-soft p-6 mb-6 border border-gray-100">
@@ -547,7 +511,7 @@ const InterviewPage: React.FC = () => {
           <div className="mb-6">
             <LoadingStates
               type="evaluation"
-              message="AI is analyzing your response..."
+              message="Claude AI is analyzing your response..."
               progress={75}
             />
           </div>
