@@ -1,6 +1,5 @@
 import React from 'react';
 import { Zap } from 'lucide-react';
-import React from 'react';
 
 interface FloatingBoltIconProps {
   className?: string;
@@ -1777,7 +1776,7 @@ const FloatingBoltIcon: React.FC<FloatingBoltIconProps> = ({ className = '' }) =
     L 329.11 121.26
     A 0.47 0.46 64.5 0 1 328.49 121.04
     L 323.15 109.59
-    A 0.53 0.52 -24.7 0 0 322.44 109.34
+    A  0.53 0.52 -24.7 0 0 322.44 109.34
     L 316.35 112.17
     A 0.55 0.55 0.0 0 0 316.09 112.89
     L 320.74 123.09
@@ -2318,7 +2317,7 @@ const FloatingBoltIcon: React.FC<FloatingBoltIconProps> = ({ className = '' }) =
     L 220.34 333.99
     Z"
   />
-  </svg>>
+  </svg>
       </a>
     );
   };
