@@ -10,7 +10,6 @@ const FloatingBoltIcon: React.FC<FloatingBoltIconProps> = ({ className = '' }) =
     target="_blank"
     rel="noopener noreferrer"
     title="Built with Bolt.new"
-    }
   >
 
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0.00 0.00 360.00 360.00" className="w-6 h-6">
