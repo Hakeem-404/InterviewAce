@@ -16,6 +16,7 @@ import InterviewPage from './pages/InterviewPage';
 import ResultsPage from './pages/ResultsPage';
 import InterviewHistoryPage from './pages/InterviewHistoryPage';
 import ProfileDashboard from './components/profile/ProfileDashboard';
+import FloatingBoltIcon from './components/FloatingBoltIcon';
 
 // Toast Provider Component
 const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -98,6 +99,7 @@ function App() {
                     } 
                   />
                 </Routes>
+                <FloatingBoltIcon />
               </div>
             </Router>
           </ToastProvider>
