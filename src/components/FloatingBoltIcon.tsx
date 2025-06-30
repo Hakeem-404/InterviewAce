@@ -12,9 +12,6 @@ const FloatingBoltIcon: React.FC<FloatingBoltIconProps> = ({ className = '' }) =
     title="Built with Bolt.new"
     className={`fixed bottom-6 right-6 p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 z-50 ${className}`}
   >
-
-  <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0.00 0.00 360.00 360.00">
 <g stroke-width="2.00" fill="none" stroke-linecap="butt">
 <path stroke="#808080" vector-effect="non-scaling-stroke" d="
