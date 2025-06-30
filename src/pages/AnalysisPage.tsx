@@ -379,7 +379,7 @@ const AnalysisPage: React.FC = () => {
           <div className="text-center">
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
               <p className="text-sm text-gray-600 mb-2">
-                <strong>Powered by Claude AI</strong> - Advanced language model for intelligent document analysis
+                <strong>Powered by AI</strong> - Advanced language model for intelligent document analysis
               </p>
               <p className="text-xs text-gray-500">
                 Processing typically takes 30-60 seconds depending on document complexity
