@@ -423,7 +423,7 @@ const AnalysisResultsPage: React.FC = () => {
                     <div className="p-3 bg-blue-100 rounded-xl">
                       <Brain className="h-6 w-6 text-blue-600" />
                     </div>
-                    <h3 className="text-xl font-bold text-blue-900">Claude AI Assessment</h3>
+                    <h3 className="text-xl font-bold text-blue-900">AI Assessment</h3>
                   </div>
                   <p className="text-blue-800 leading-relaxed text-lg">
                     {analysisData.overallFit}
