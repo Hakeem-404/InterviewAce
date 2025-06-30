@@ -323,7 +323,7 @@ const UploadPage: React.FC = () => {
           
           {isValidForAnalysis && (
             <p className="text-sm text-gray-600 mt-4">
-              This usually takes 30-60 seconds to complete using Claude AI
+              This usually takes 30-60 seconds to complete using AI
             </p>
           )}
         </div>
