@@ -57,26 +57,61 @@ const ProfileDashboard = () => {
     try {
       setIsLoading(true)
       
-      // Load user statistics from localStorage (since we don't have a database table yet)
-      const sessions = JSON.parse(localStorage.getItem('interviewSessions') || '[]')
-      const userSessions = sessions.filter(session => session.userId === user?.id)
-
-      if (userSessions.length > 0) {
-        const totalSessions = userSessions.length
-        const scores = userSessions.map(s => s.overallScore || 0).filter(s => s > 0)
+      // Load interview sessions from database
+      const { data: sessions, error } = await supabase
+        .from('interview_sessions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+      
+      if (error) {
+        console.error('Error fetching sessions:', error)
+        throw error
+      }
+      
+      if (sessions && sessions.length > 0) {
+        const totalSessions = sessions.length
+        const scores = sessions.map(s => s.overall_score || 0).filter(s => s > 0)
         const avgScore = scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) / scores.length : 0
         const bestScore = scores.length > 0 ? Math.max(...scores) : 0
-        const lastSession = userSessions[userSessions.length - 1]?.timestamp
-        const totalQuestions = userSessions.reduce((sum, session) => sum + (session.totalQuestions || 0), 0)
+        const lastSession = sessions[0]?.created_at
+        const totalQuestions = sessions.reduce((sum, session) => {
+          return sum + (session.questions_data?.length || 0)
+        }, 0)
+        
+        // Calculate improvement rate
+        const improvementRate = calculateImprovementRate(sessions)
         
         setStats({
           totalSessions,
           avgScore: Math.round(avgScore * 10) / 10,
-          improvementRate: calculateImprovementRate(userSessions),
+          improvementRate,
           lastSession,
           bestScore,
           totalQuestions
         })
+      } else {
+        // Fallback to localStorage if no database records
+        const localSessions = JSON.parse(localStorage.getItem('interviewSessions') || '[]')
+        const userSessions = localSessions.filter(session => session.userId === user?.id)
+
+        if (userSessions.length > 0) {
+          const totalSessions = userSessions.length
+          const scores = userSessions.map(s => s.overallScore || 0).filter(s => s > 0)
+          const avgScore = scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) / scores.length : 0
+          const bestScore = scores.length > 0 ? Math.max(...scores) : 0
+          const lastSession = userSessions[0]?.timestamp
+          const totalQuestions = userSessions.reduce((sum, session) => sum + (session.totalQuestions || 0), 0)
+          
+          setStats({
+            totalSessions,
+            avgScore: Math.round(avgScore * 10) / 10,
+            improvementRate: calculateImprovementRate(userSessions),
+            lastSession,
+            bestScore,
+            totalQuestions
+          })
+        }
       }
     } catch (error) {
       console.error('Failed to load user stats:', error)
@@ -88,12 +123,12 @@ const ProfileDashboard = () => {
   const calculateImprovementRate = (sessions) => {
     if (sessions.length < 2) return 0
     
-    const scores = sessions.map(s => s.overallScore || 0).filter(s => s > 0)
+    const scores = sessions.map(s => s.overall_score || s.overallScore || 0).filter(s => s > 0)
     if (scores.length < 2) return 0
     
     const recentCount = Math.min(3, Math.floor(scores.length / 2))
-    const recent = scores.slice(-recentCount).reduce((sum, s) => sum + s, 0) / recentCount
-    const older = scores.slice(0, recentCount).reduce((sum, s) => sum + s, 0) / recentCount
+    const recent = scores.slice(0, recentCount).reduce((sum, s) => sum + s, 0) / recentCount
+    const older = scores.slice(-recentCount).reduce((sum, s) => sum + s, 0) / recentCount
     
     return older > 0 ? Math.round(((recent - older) / older * 100) * 10) / 10 : 0
   }
