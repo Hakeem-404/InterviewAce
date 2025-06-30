@@ -668,7 +668,7 @@ const AnalysisResultsPage: React.FC = () => {
         <div className="mt-12 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 text-center">
           <div className="flex items-center justify-center gap-3 mb-3">
             <Brain className="h-6 w-6 text-blue-600" />
-            <span className="font-semibold text-blue-900 text-lg">Powered by Claude AI</span>
+            <span className="font-semibold text-blue-900 text-lg">Powered by AI</span>
           </div>
           <p className="text-blue-700 leading-relaxed">
             Your documents were analyzed using advanced AI to provide personalized, actionable insights for interview success. 
