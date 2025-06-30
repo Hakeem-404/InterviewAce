@@ -369,7 +369,7 @@ const UploadPage: React.FC = () => {
                 {
                   step: 1,
                   title: 'AI Document Analysis',
-                  description: 'Claude AI extracts and analyzes key information from your CV and job description',
+                  description: 'AI extracts and analyzes key information from your CV and job description',
                   icon: <BrainCircuit className="h-6 w-6" />,
                   color: 'blue'
                 },
