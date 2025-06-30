@@ -69,20 +69,19 @@ export const subscriptionService = {
         .from('user_subscriptions')
         .select('*')
         .eq('user_id', userId)
-        .maybeSingle();
+        .single();
 
       if (error) {
+        // If no subscription found, return free tier
+        if (error.code === 'PGRST116') {
+          return {
+            plan: SUBSCRIPTION_PLANS.FREE.id,
+            status: 'active',
+            current_period_end: null,
+            cancel_at_period_end: false
+          };
+        }
         throw error;
-      }
-
-      // If no subscription found, return free tier
-      if (!data) {
-        return {
-          plan: SUBSCRIPTION_PLANS.FREE.id,
-          status: 'active',
-          current_period_end: null,
-          cancel_at_period_end: false
-        };
       }
 
       return data;
