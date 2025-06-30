@@ -258,7 +258,7 @@ const AnalysisPage: React.FC = () => {
               <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-sm text-yellow-800">
                   If the problem persists, please check your internet connection or try again later. 
-                  The Claude AI service may be temporarily unavailable.
+                  The AI service may be temporarily unavailable.
                 </p>
               </div>
             )}
