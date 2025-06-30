@@ -88,7 +88,7 @@ const AnalysisPage: React.FC = () => {
       setEstimatedTimeRemaining(50);
 
       // Step 2: Analyze documents with Claude AI
-      setProcessingStep('Analyzing CV and job description with Claude AI...');
+      setProcessingStep('Analyzing CV and job description with AI...');
       const startTime = Date.now();
       
       const analysis = await analyzeDocuments(cvText, jobDescription);
