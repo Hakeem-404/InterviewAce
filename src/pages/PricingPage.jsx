@@ -10,6 +10,7 @@ import { useSubscription } from '../context/SubscriptionContext';
 import { useToast } from '../hooks/useToast';
 import Button from '../components/Button';
 import AuthModal from '../components/auth/AuthModal';
+import StripeCheckoutModal from '../components/premium/StripeCheckoutModal';
 
 const PricingPage = () => {
   const { user } = useAuth();
@@ -17,6 +18,7 @@ const PricingPage = () => {
   const { addToast } = useToast();
   const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [billingInterval, setBillingInterval] = useState('month');
   const [showFaq, setShowFaq] = useState({});
@@ -41,16 +43,8 @@ const PricingPage = () => {
       return;
     }
 
-    try {
-      await upgradeToPremium(
-        planId,
-        `${window.location.origin}/subscription/success`,
-        `${window.location.origin}/pricing`
-      );
-    } catch (error) {
-      console.error('Failed to upgrade:', error);
-      addToast('Failed to start checkout process', 'error');
-    }
+    setSelectedPlan(planId);
+    setShowCheckoutModal(true);
   };
 
   const handleAuthSuccess = () => {
@@ -502,6 +496,13 @@ const PricingPage = () => {
         onClose={() => setShowAuthModal(false)}
         initialForm="signup"
         onSuccess={handleAuthSuccess}
+      />
+
+      {/* Checkout Modal */}
+      <StripeCheckoutModal
+        isOpen={showCheckoutModal}
+        onClose={() => setShowCheckoutModal(false)}
+        planId={selectedPlan}
       />
     </div>
   );
