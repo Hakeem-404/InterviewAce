@@ -22,17 +22,6 @@ InterviewAce is built to simulate realistic interview preparation with fast, per
 4. **Evaluate** each answer with AI feedback
 5. **Review** final scorecard, insights, and history
 
-### Screenshots (Suggested)
-
-Add images to a folder like `docs/screenshots/` and reference them here:
-
-```md
-![Home](docs/screenshots/home.png)
-![Upload](docs/screenshots/upload.png)
-![Interview](docs/screenshots/interview.png)
-![Results](docs/screenshots/results.png)
-```
-
 ## Tech Stack
 
 - `React` + `Vite` + `TypeScript`
